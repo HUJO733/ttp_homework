@@ -1,54 +1,36 @@
 package com.example.board.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Table(name = "boards")
+@Entity
 public class Board {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20, nullable = false)
+    @Column(length=20, nullable=false)
     private String title;
 
-    @Column(length = 3000, nullable = false)
+    @Column(length=3000, nullable=false)
     private String content;
 
-    @Column(length = 10, nullable = false)
+    @Column(length=10, nullable=false)
     private String nickname;
 
-    @Column(nullable = false)
-    private String passwordHash; // BCrypt 해시
+    @Column(length=4, nullable=false)
+    private String password;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private boolean deleted = false; // soft delete flag
-    private LocalDateTime deletedAt;
-
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("createdAt ASC")
+    @OneToMany(mappedBy="board", cascade=CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 }

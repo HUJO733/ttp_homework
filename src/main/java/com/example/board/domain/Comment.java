@@ -1,46 +1,32 @@
 package com.example.board.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Table(name = "comments")
+@Entity
 public class Comment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Board board;
-
-    @Column(length = 200, nullable = false)
+    @Column(length=200, nullable=false)
     private String content;
 
-    @Column(length = 10, nullable = false)
+    @Column(length=10, nullable=false)
     private String nickname;
 
-    @Column(nullable = false)
-    private String passwordHash;
+    @Column(length=4, nullable=false)
+    private String password;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private boolean deleted = false;
-    private LocalDateTime deletedAt;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    @ManyToOne
+    @JoinColumn(name="board_id")
+    private Board board;
 }

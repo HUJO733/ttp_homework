@@ -1,75 +1,55 @@
 package com.example.board.controller;
 
-import com.example.board.dto.*;
 import com.example.board.domain.Board;
 import com.example.board.domain.Comment;
+import com.example.board.dto.*;
 import com.example.board.service.BoardService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.http.*;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/boards")
-@RequiredArgsConstructor
+@RequestMapping("/boards")
 public class BoardController {
+
     private final BoardService boardService;
 
+    public BoardController(BoardService boardService) { this.boardService = boardService; }
+
     @PostMapping
-    public ResponseEntity<ApiResponse<Long>> createBoard(@Validated @RequestBody BoardCreateRequest req) {
-        Board b = boardService.createBoard(req);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(201, "게시글 생성 성공", b.getId()));
+    public ResponseEntity<ApiResponse<Board>> createBoard(@RequestBody BoardCreateRequest request) {
+        Board board = boardService.createBoard(request);
+        return ResponseEntity.status(201).body(new ApiResponse<>(board, "Board created"));
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<BoardListItem>>> listBoards(@RequestParam(defaultValue = "0") int page) {
-        Page<BoardListItem> result = boardService.listBoards(page);
-        return ResponseEntity.ok(new ApiResponse<>(200, "성공", result));
+    public ResponseEntity<ApiResponse<List<Board>>> listBoards() {
+        List<Board> boards = boardService.listBoards();
+        return ResponseEntity.ok(new ApiResponse<>(boards, "Board list"));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<BoardDetail>> getDetail(@PathVariable Long id) {
-        BoardDetail detail = boardService.getBoardDetail(id);
-        return ResponseEntity.ok(new ApiResponse<>(200, "성공", detail));
+    public ResponseEntity<ApiResponse<Board>> getBoard(@PathVariable Long id) {
+        Board board = boardService.getBoard(id);
+        return ResponseEntity.ok(new ApiResponse<>(board, "Board detail"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Long>> updateBoard(@PathVariable Long id,
-                                                         @Validated @RequestBody BoardUpdateRequest req) {
-        Board updated = boardService.updateBoard(id, req);
-        return ResponseEntity.ok(new ApiResponse<>(200, "수정 성공", updated.getId()));
+    public ResponseEntity<ApiResponse<Board>> updateBoard(@PathVariable Long id, @RequestBody BoardUpdateRequest request) {
+        Board board = boardService.updateBoard(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(board, "Board updated"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteBoard(@PathVariable Long id,
-                                                         @RequestParam String password) {
+    public ResponseEntity<ApiResponse<Void>> deleteBoard(@PathVariable Long id, @RequestParam String password) {
         boardService.deleteBoard(id, password);
-        return ResponseEntity.ok(new ApiResponse<>(200, "삭제 성공", null));
+        return ResponseEntity.ok(new ApiResponse<>(null, "Board deleted"));
     }
 
-    // 댓글 관련 엔드포인트
     @PostMapping("/{id}/comments")
-    public ResponseEntity<ApiResponse<Long>> createComment(@PathVariable Long id,
-                                                           @Validated @RequestBody CommentCreateRequest req) {
-        Comment c = boardService.createComment(id, req);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(201, "댓글 생성 성공", c.getId()));
-    }
-
-    @PutMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<Long>> updateComment(@PathVariable Long commentId,
-                                                           @RequestParam String password,
-                                                           @Validated @RequestBody CommentCreateRequest req) {
-        Comment updated = boardService.updateComment(commentId, password, req.getContent(), req.getNickname());
-        return ResponseEntity.ok(new ApiResponse<>(200, "댓글 수정 성공", updated.getId()));
-    }
-
-    @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable Long commentId,
-                                                           @RequestParam String password) {
-        boardService.deleteComment(commentId, password);
-        return ResponseEntity.ok(new ApiResponse<>(200, "댓글 삭제 성공", null));
+    public ResponseEntity<ApiResponse<Comment>> createComment(@PathVariable Long id, @RequestBody CommentCreateRequest request) {
+        Comment comment = boardService.createComment(id, request);
+        return ResponseEntity.status(201).body(new ApiResponse<>(comment, "Comment created"));
     }
 }
