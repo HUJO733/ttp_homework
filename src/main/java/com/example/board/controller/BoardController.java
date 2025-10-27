@@ -98,15 +98,15 @@ public class BoardController {
 
     /**
      * 댓글 생성
-     * @param boardId 댓글을 달고자 하는 게시글 pk
+     * @param id      댓글을 생성하는 게시글 pk
      * @param request CommentCreateAndUpdateRequest
      * @return 성공 시 201 코드, 댓글 정보, 메세지 반환
      */
     @PostMapping("/{id}/comments")
     public ResponseEntity<ApiResponse<CommentResponseDto>> createComment(
-            @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long boardId,
+            @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long id,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
-        Comment comment = boardService.createComment(boardId, request);
+        Comment comment = boardService.createComment(id, request);
         CommentResponseDto commentDto = CommentResponseDto.from(comment);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(commentDto, "댓글 생성 성공"));
@@ -118,7 +118,7 @@ public class BoardController {
      * @param request   CommentCreateAndUpdateRequest
      * @return
      */
-    @PutMapping("/{id}/comments")
+    @PutMapping("/{id}/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> updateComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
@@ -128,14 +128,13 @@ public class BoardController {
         return ResponseEntity.ok(new ApiResponse<>(commentDto, "댓글 수정 성공"));
     }
 
-
     /**
      * 댓글 삭제
      * @param commentId 삭제할 댓글 pk
      * @param password  삭제할 댓글의 비밀번호
      * @return
      */
-    @DeleteMapping("/{id}/comments")
+    @DeleteMapping("/{id}/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> deleteComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
             @RequestBody String password) {

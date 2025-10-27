@@ -42,13 +42,12 @@ public class BoardService {
         return boardRepository.findAllByDeletedFalse();
     }
 
-
     /**
      * 게시글 상세 조회 서비스
      * @param id 게시글 pk
      * @return
      */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly=true)
     public Board getBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("게시글 찾을 수 없음"));
@@ -62,7 +61,6 @@ public class BoardService {
 
         return board;
     }
-
 
     /**
      * 게시글 수정 서비스
@@ -83,7 +81,7 @@ public class BoardService {
     }
 
     /**
-     *  게시글 삭제 서비스
+     * 게시글 삭제 서비스
      * @param id       삭제할 게시글 pk
      * @param password 삭제할 게시글의 비밀번호
      */
@@ -97,7 +95,6 @@ public class BoardService {
         board.setDeleted(true); // DB에서 삭제하지 않고 플래그 변경
         boardRepository.save(board); // 변경 사항 저장
     }
-
 
     /**
      * 댓글 생성 서비스
