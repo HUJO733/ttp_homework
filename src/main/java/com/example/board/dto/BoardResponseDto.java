@@ -2,38 +2,44 @@ package com.example.board.dto;
 
 import com.example.board.domain.Board;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 public class BoardResponseDto {
-    private Long id;
-    private String title;
-    private String content;
-    private String nickname;
-    private LocalDateTime createdAt;
-    private List<CommentResponseDto> comments;
+    private final Long id;
+    private final String title;
+    private final String content;
+    private final String nickname;
+    private final LocalDateTime createdAt;
+    private final List<CommentResponseDto> comments;
 
-    // 엔티티 → DTO 변환
+    @Builder
+    public BoardResponseDto(Long id, String title, String content, String nickname,
+                            LocalDateTime createdAt, List<CommentResponseDto> comments) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.nickname = nickname;
+        this.createdAt = createdAt;
+        this.comments = comments == null ? List.of() : List.copyOf(comments);
+    }
+
     public static BoardResponseDto from(Board board) {
-        BoardResponseDto dto = new BoardResponseDto();
-        dto.setId(board.getId());
-        dto.setTitle(board.getTitle());
-        dto.setContent(board.getContent());
-        dto.setNickname(board.getNickname());
-        dto.setCreatedAt(board.getCreatedAt());
-
-        // 댓글 포함 변환
-        dto.setComments(
-                board.getComments().stream()
-                        .map(CommentResponseDto::from)
-                        .collect(Collectors.toList())
-        );
-
-        return dto;
+        return BoardResponseDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .nickname(board.getNickname())
+                .createdAt(board.getCreatedAt())
+                .comments(
+                        board.getComments() == null
+                                ? List.of()
+                                : board.getComments().stream().map(CommentResponseDto::from).collect(Collectors.toList())
+                )
+                .build();
     }
 }

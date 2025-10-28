@@ -1,6 +1,5 @@
 package com.example.board.dto;
 
-import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

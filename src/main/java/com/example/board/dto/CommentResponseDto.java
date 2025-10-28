@@ -2,21 +2,25 @@ package com.example.board.dto;
 
 import com.example.board.domain.Comment;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class CommentResponseDto {
-    private Long id;
-    private String content;
-    private String nickname;
+    private final Long id;
+    private final String content;
+    private final String nickname;
 
-    // 엔티티 → DTO 변환
+    private CommentResponseDto(Long id, String content, String nickname) {
+        this.id = id;
+        this.content = content;
+        this.nickname = nickname;
+    }
+
     public static CommentResponseDto from(Comment comment) {
-        CommentResponseDto dto = new CommentResponseDto();
-        dto.setId(comment.getId());
-        dto.setContent(comment.getContent());
-        dto.setNickname(comment.getNickname());
-        return dto;
+        return new CommentResponseDto(
+                comment.getId(),
+                comment.getContent(),
+                comment.getNickname()
+        );
     }
 }
+
