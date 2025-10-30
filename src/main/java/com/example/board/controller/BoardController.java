@@ -102,7 +102,7 @@ public class BoardController {
      * @param request CommentCreateAndUpdateRequest
      * @return 성공 시 201 코드, 댓글 정보, 메세지 반환
      */
-    @PostMapping("/{id}/comments")
+    @PostMapping("/comments")
     public ResponseEntity<ApiResponse<CommentResponseDto>> createComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long id,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
@@ -118,7 +118,7 @@ public class BoardController {
      * @param request   CommentCreateAndUpdateRequest
      * @return
      */
-    @PutMapping("/{id}/comments/{commentId}")
+    @PutMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> updateComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
@@ -134,7 +134,7 @@ public class BoardController {
      * @param password  삭제할 댓글의 비밀번호
      * @return
      */
-    @DeleteMapping("/{id}/comments/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> deleteComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
             @RequestBody String password) {
