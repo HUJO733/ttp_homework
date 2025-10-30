@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  * 댓글 엔티티
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Setter
 @NoArgsConstructor
 @Entity
+@SQLRestriction("deleted = false")
 public class Comment {
     /**
      * 댓글 엔티티: 댓글 id

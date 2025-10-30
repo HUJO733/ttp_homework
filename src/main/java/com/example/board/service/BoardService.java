@@ -52,13 +52,6 @@ public class BoardService {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("게시글 찾을 수 없음"));
 
-        // 삭제되지 않은 댓글만 필터링
-        board.setComments(
-                board.getComments().stream()
-                        .filter(comment -> !comment.isDeleted())
-                        .toList()
-        );
-
         return board;
     }
 

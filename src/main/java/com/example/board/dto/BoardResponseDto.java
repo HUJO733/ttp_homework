@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class BoardResponseDto {
         this.content = content;
         this.nickname = nickname;
         this.createdAt = createdAt;
-        this.comments = comments == null ? List.of() : List.copyOf(comments);
+        this.comments = comments == null || comments.isEmpty() ? new ArrayList<>() : comments;
     }
 
     public static BoardResponseDto from(Board board) {
@@ -36,8 +37,8 @@ public class BoardResponseDto {
                 .nickname(board.getNickname())
                 .createdAt(board.getCreatedAt())
                 .comments(
-                        board.getComments() == null
-                                ? List.of()
+                        board.getComments() == null || board.getComments().isEmpty()
+                                ? new ArrayList<>()
                                 : board.getComments().stream().map(CommentResponseDto::from).collect(Collectors.toList())
                 )
                 .build();
