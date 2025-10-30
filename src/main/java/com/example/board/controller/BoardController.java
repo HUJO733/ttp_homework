@@ -102,7 +102,7 @@ public class BoardController {
      * @param request CommentCreateAndUpdateRequest
      * @return 성공 시 201 코드, 댓글 정보, 메세지 반환
      */
-    @PostMapping("/comments")
+    @PostMapping("/{id}/comments")
     public ResponseEntity<ApiResponse<CommentResponseDto>> createComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long id,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
@@ -137,7 +137,7 @@ public class BoardController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> deleteComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
-            @RequestBody String password) {
+            @RequestParam String password) {
         boardService.deleteComment(commentId, password);
 
         return ResponseEntity.ok(new ApiResponse<>(null, "댓글 삭제 성공"));
