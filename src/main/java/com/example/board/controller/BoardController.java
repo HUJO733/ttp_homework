@@ -1,7 +1,6 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Board;
-import com.example.board.domain.Comment;
 import com.example.board.dto.*;
 import com.example.board.service.BoardService;
 import jakarta.validation.Valid;
@@ -94,52 +93,5 @@ public class BoardController {
         boardService.deleteBoard(id, request);
 
         return ResponseEntity.ok(new ApiResponse<>(null, "게시글 삭제 성공"));
-    }
-
-    /**
-     * 댓글 생성
-     * @param id      댓글을 생성하는 게시글 pk
-     * @param request CommentCreateAndUpdateRequest
-     * @return 성공 시 201 코드, 댓글 정보, 메세지 반환
-     */
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<ApiResponse<CommentResponseDto>> createComment(
-            @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long id,
-            @Valid @RequestBody CommentCreateAndUpdateRequest request) {
-        Comment comment = boardService.createComment(id, request);
-        CommentResponseDto commentDto = CommentResponseDto.from(comment);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(commentDto, "댓글 생성 성공"));
-    }
-
-    /**
-     * 댓글 수정
-     * @param commentId 수정할 댓글 pk
-     * @param request   CommentCreateAndUpdateRequest
-     * @return
-     */
-    @PutMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponseDto>> updateComment(
-            @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
-            @Valid @RequestBody CommentCreateAndUpdateRequest request) {
-        Comment comment = boardService.updateComment(commentId, request);
-        CommentResponseDto commentDto = CommentResponseDto.from(comment);
-
-        return ResponseEntity.ok(new ApiResponse<>(commentDto, "댓글 수정 성공"));
-    }
-
-    /**
-     * 댓글 삭제
-     * @param commentId 삭제할 댓글 pk
-     * @param request  CommentCreateAndUpdateRequest
-     * @return
-     */
-    @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponseDto>> deleteComment(
-            @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
-            @Valid @RequestBody CommentCreateAndUpdateRequest request) {
-        boardService.deleteComment(commentId, request);
-
-        return ResponseEntity.ok(new ApiResponse<>(null, "댓글 삭제 성공"));
     }
 }
