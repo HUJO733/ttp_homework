@@ -36,11 +36,11 @@ public class BoardService {
 
     /**
      * 게시글 목록 조회 서비스
-     * @return deleted 값이 false인 게시글(삭제하지 않은)들 조회
+     * @return ACTIVE인 게시글(삭제하지 않은)들 조회
      */
     @Transactional(readOnly=true)
     public List<Board> listBoards() {
-        return boardRepository.findAllByDeletedFalse();
+        return boardRepository.findAllByStatus(PostStatus.ACTIVE);
     }
 
     /**

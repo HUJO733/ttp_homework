@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLRestriction("deleted = false")
+@SQLRestriction("status = 'ACTIVE'")
 public class Board {
     /**
      * 게시판 엔티티: 게시글 id
@@ -54,8 +54,9 @@ public class Board {
      * 소프트 삭제 플래그
      * 게시글 삭제 시 DB에는 남아있고 목록에서만 삭제
      */
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean deleted = false;
+    private PostStatus status = PostStatus.ACTIVE;
 
     /**
      * 작성 일시
@@ -83,9 +84,6 @@ public class Board {
         this.password = password;
     }
 
-    // =========================
-    // 행위 메서드
-    // =========================
     public void update(String title, String content, String nickname) {
         this.title = title;
         this.content = content;
@@ -93,7 +91,7 @@ public class Board {
     }
 
     public void delete() {
-        this.deleted = true;
+        this.status = PostStatus.DELETED;
     }
 
     public boolean checkPassword(String password) {

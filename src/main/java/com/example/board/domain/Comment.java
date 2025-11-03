@@ -13,7 +13,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLRestriction("deleted = false")
+@SQLRestriction("status = 'ACTIVE'")
 public class Comment {
     /**
      * 댓글 엔티티: 댓글 id
@@ -44,8 +44,9 @@ public class Comment {
      * 소프트 삭제 플래그
      * 댓글 삭제 시 DB에는 남아있고 목록에서만 삭제
      */
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean deleted = false;
+    private PostStatus status = PostStatus.ACTIVE;
 
     /**
      * 댓글과 게시글 관계(다대일)
@@ -72,7 +73,7 @@ public class Comment {
     }
 
     public void delete() {
-        this.deleted = true;
+        this.status = PostStatus.DELETED;
     }
 
     public boolean checkPassword(String password) {
