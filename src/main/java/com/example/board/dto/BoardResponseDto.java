@@ -22,12 +22,6 @@ public class BoardResponseDto {
     private final List<CommentResponseDto> comments;
 
     public static BoardResponseDto from(Board board) {
-        List<CommentResponseDto> commentList = board.getComments() == null || board.getComments().isEmpty()
-                ? new ArrayList<>()
-                : board.getComments().stream()
-                    .map(CommentResponseDto::from)
-                    .collect(Collectors.toList());
-
         return BoardResponseDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())

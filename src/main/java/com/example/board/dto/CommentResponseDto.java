@@ -1,10 +1,12 @@
 package com.example.board.dto;
 
 import com.example.board.domain.Comment;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.AllArgsConstructor;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class CommentResponseDto {
     private final Long id;
@@ -12,11 +14,11 @@ public class CommentResponseDto {
     private final String nickname;
 
     public static CommentResponseDto from(Comment comment) {
-        return new CommentResponseDto(
-                comment.getId(),
-                comment.getContent(),
-                comment.getNickname()
-        );
+        return CommentResponseDto.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .nickname(comment.getNickname())
+                .build();
     }
 }
 
