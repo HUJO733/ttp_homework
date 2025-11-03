@@ -75,13 +75,13 @@ public class BoardService {
 
     /**
      * 게시글 삭제 서비스
-     * @param id       삭제할 게시글 pk
-     * @param password 삭제할 게시글의 비밀번호
+     * @param id      삭제할 게시글 pk
+     * @param request BoardCreateAndUpdateRequest
      */
     @Transactional
-    public void deleteBoard(Long id, String password) {
+    public void deleteBoard(Long id, BoardCreateAndUpdateRequest request) {
         Board board = getBoard(id);
-        if (!board.getPassword().equals(password)) {
+        if (!board.getPassword().equals(request.getPassword())) {
             throw new BadRequestException("비밀번호 불일치");
         }
 
@@ -130,14 +130,16 @@ public class BoardService {
     /**
      * 댓글 삭제 서비스 (소프트 삭제)
      * @param commentId 삭제할 댓글 pk
-     * @param password  삭제할 댓글 비밀번호
+     * @param request  CommentCreateAndUpdateRequest
      */
     @Transactional
-    public void deleteComment(Long commentId, String password) {
+    public void deleteComment(Long commentId, CommentCreateAndUpdateRequest request) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("댓글 찾을 수 없음"));
 
-        if (!comment.getPassword().equals(password)) {
+        System.out.println("comment.getPassword():" + comment.getPassword());
+        System.out.println("request.getPassword():" + request.getPassword());
+        if (!comment.getPassword().equals(request.getPassword())) {
             throw new BadRequestException("비밀번호 불일치");
         }
 

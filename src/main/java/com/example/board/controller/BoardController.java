@@ -83,15 +83,15 @@ public class BoardController {
 
     /**
      * 게시글 삭제
-     * @param id       삭제할 게시글 pk
-     * @param password 삭제할 게시글의 비밀번호
+     * @param id      삭제할 게시글 pk
+     * @param request BoardCreateAndUpdateRequest
      * @return 성공 시 200 코드, 메세지 반환
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteBoard(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long id,
-            @RequestParam String password) {
-        boardService.deleteBoard(id, password);
+            @RequestBody BoardCreateAndUpdateRequest request) {
+        boardService.deleteBoard(id, request);
 
         return ResponseEntity.ok(new ApiResponse<>(null, "게시글 삭제 성공"));
     }
@@ -131,14 +131,14 @@ public class BoardController {
     /**
      * 댓글 삭제
      * @param commentId 삭제할 댓글 pk
-     * @param password  삭제할 댓글의 비밀번호
+     * @param request  CommentCreateAndUpdateRequest
      * @return
      */
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> deleteComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
-            @RequestParam String password) {
-        boardService.deleteComment(commentId, password);
+            @Valid @RequestBody CommentCreateAndUpdateRequest request) {
+        boardService.deleteComment(commentId, request);
 
         return ResponseEntity.ok(new ApiResponse<>(null, "댓글 삭제 성공"));
     }
