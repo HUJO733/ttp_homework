@@ -21,15 +21,15 @@ public class CommentController {
 
     /**
      * 댓글 생성
-     * @param id      댓글을 생성하는 게시글 pk
+     * @param boardid 댓글을 생성하는 게시글 pk
      * @param request CommentCreateAndUpdateRequest
      * @return 성공 시 201 코드, 댓글 정보, 메세지 반환
      */
-    @PostMapping("/{id}/comments")
+    @PostMapping("/boards/{boardid}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> createComment(
-            @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long id,
+            @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long boardid,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
-        Comment comment = commentService.createComment(id, request);
+        Comment comment = commentService.createComment(boardid, request);
         CommentResponseDto commentDto = CommentResponseDto.from(comment);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(commentDto, "댓글 생성 성공"));
@@ -41,7 +41,7 @@ public class CommentController {
      * @param request   CommentCreateAndUpdateRequest
      * @return
      */
-    @PutMapping("/comments/{commentId}")
+    @PutMapping("/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> updateComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
@@ -57,7 +57,7 @@ public class CommentController {
      * @param request  CommentCreateAndUpdateRequest
      * @return
      */
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponseDto>> deleteComment(
             @Positive(message = "pk값은 0 또는 음수일 수 없습니다.") @PathVariable Long commentId,
             @Valid @RequestBody CommentCreateAndUpdateRequest request) {
