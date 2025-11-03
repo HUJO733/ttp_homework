@@ -3,6 +3,7 @@ package com.example.board.dto;
 import com.example.board.domain.Board;
 import lombok.Getter;
 import lombok.Builder;
+import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class BoardResponseDto {
     private final Long id;
     private final String title;
@@ -18,18 +21,13 @@ public class BoardResponseDto {
     private final LocalDateTime createdAt;
     private final List<CommentResponseDto> comments;
 
-    @Builder
-    public BoardResponseDto(Long id, String title, String content, String nickname,
-                            LocalDateTime createdAt, List<CommentResponseDto> comments) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.nickname = nickname;
-        this.createdAt = createdAt;
-        this.comments = comments == null || comments.isEmpty() ? new ArrayList<>() : comments;
-    }
-
     public static BoardResponseDto from(Board board) {
+        List<CommentResponseDto> commentList = board.getComments() == null || board.getComments().isEmpty()
+                ? new ArrayList<>()
+                : board.getComments().stream()
+                    .map(CommentResponseDto::from)
+                    .collect(Collectors.toList());
+
         return BoardResponseDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())

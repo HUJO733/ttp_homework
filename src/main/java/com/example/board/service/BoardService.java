@@ -25,11 +25,12 @@ public class BoardService {
      */
     @Transactional
     public Board createBoard(BoardCreateAndUpdateRequest request) {
-        Board board = new Board();
-        board.setTitle(request.getTitle());
-        board.setContent(request.getContent());
-        board.setNickname(request.getNickname());
-        board.setPassword(request.getPassword());
+        Board board = Board.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .nickname(request.getNickname())
+                .password(request.getPassword())
+                .build();
         return boardRepository.save(board);
     }
 
@@ -49,10 +50,8 @@ public class BoardService {
      */
     @Transactional(readOnly=true)
     public Board getBoard(Long id) {
-        Board board = boardRepository.findById(id)
+        return boardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("게시글 찾을 수 없음"));
-
-        return board;
     }
 
     /**
@@ -67,9 +66,8 @@ public class BoardService {
         if (!board.getPassword().equals(request.getPassword())) {
             throw new BadRequestException("비밀번호 불일치");
         }
-        board.setTitle(request.getTitle());
-        board.setContent(request.getContent());
-        board.setNickname(request.getNickname());
+
+        board.update(request.getTitle(), request.getContent(), request.getNickname());
         return boardRepository.save(board);
     }
 
@@ -81,11 +79,11 @@ public class BoardService {
     @Transactional
     public void deleteBoard(Long id, BoardCreateAndUpdateRequest request) {
         Board board = getBoard(id);
-        if (!board.getPassword().equals(request.getPassword())) {
+        if (!board.checkPassword(request.getPassword())) {
             throw new BadRequestException("비밀번호 불일치");
         }
 
-        board.setDeleted(true); // DB에서 삭제하지 않고 플래그 변경
+        board.delete();
         boardRepository.save(board); // 변경 사항 저장
     }
 
@@ -98,11 +96,14 @@ public class BoardService {
     @Transactional
     public Comment createComment(Long boardId, CommentCreateAndUpdateRequest request) {
         Board board = getBoard(boardId);
-        Comment comment = new Comment();
-        comment.setBoard(board);
-        comment.setContent(request.getContent());
-        comment.setNickname(request.getNickname());
-        comment.setPassword(request.getPassword());
+        Comment comment = Comment.builder()
+                .content(request.getContent())
+                .nickname(request.getNickname())
+                .password(request.getPassword())
+                .build();
+
+        board.addComment(comment);  // 양방향 연관관계 설정
+
         return commentRepository.save(comment);
     }
 
@@ -117,13 +118,11 @@ public class BoardService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("댓글 찾을 수 없음"));
 
-        if (!comment.getPassword().equals(request.getPassword())) {
+        if (!comment.checkPassword(request.getPassword())) {
             throw new BadRequestException("비밀번호 불일치");
         }
 
-        comment.setContent(request.getContent());
-        comment.setNickname(request.getNickname());
-
+        comment.update(request.getContent(), request.getNickname());
         return commentRepository.save(comment);
     }
 
@@ -137,13 +136,11 @@ public class BoardService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("댓글 찾을 수 없음"));
 
-        System.out.println("comment.getPassword():" + comment.getPassword());
-        System.out.println("request.getPassword():" + request.getPassword());
-        if (!comment.getPassword().equals(request.getPassword())) {
+        if (!comment.checkPassword(request.getPassword())) {
             throw new BadRequestException("비밀번호 불일치");
         }
 
-        comment.setDeleted(true); // DB에서 삭제하지 않고 플래그 변경
+        comment.delete();
         commentRepository.save(comment);
     }
 }

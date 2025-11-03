@@ -3,14 +3,15 @@ package com.example.board.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
 import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 /**
  * 게시글 생성 및 수정
  */
 @Getter
-@Setter
+@AllArgsConstructor
 public class BoardCreateAndUpdateRequest {
     /**
      * 게시글 생성 및 수정: 제목은 20자 내 문자

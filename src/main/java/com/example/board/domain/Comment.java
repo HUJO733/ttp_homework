@@ -1,18 +1,18 @@
 package com.example.board.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 /**
  * 댓글 엔티티
  */
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLRestriction("deleted = false")
 public class Comment {
     /**
@@ -54,4 +54,28 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name="board_id")
     private Board board;
+
+    @Builder
+    public Comment(String content, String nickname, String password) {
+        this.content = content;
+        this.nickname = nickname;
+        this.password = password;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public void update(String content, String nickname) {
+        this.content = content;
+        this.nickname = nickname;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
 }

@@ -4,13 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 /**
  * 댓글 생성 및 수정
  */
 @Getter
-@Setter
+@AllArgsConstructor
 public class CommentCreateAndUpdateRequest {
     /**
      * 댓글 생성 및 수정: 내용은 200자 내 문자
